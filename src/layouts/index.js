@@ -6,10 +6,10 @@ const LayoutStyle = styled("span")`
     
 `;
 
-export default ({signedIn, children}) => (
+export default ({signedIn, fullWidth, children}) => (
     <LayoutStyle>
         <Header signedIn={signedIn} />
-        <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+        <div className={`col-sm-12 ${!fullWidth ? 'col-md-8 offset-md-2 col-lg-6 offset-lg-3' : ''}`}>
             {children}
         </div>
     </LayoutStyle>
