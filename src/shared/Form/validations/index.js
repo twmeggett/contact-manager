@@ -1,6 +1,6 @@
 export const required = value => value ? undefined : 'Required';
 export const email = domain => value => new RegExp(`^[A-Za-z0-9._%+-]+@${domain}$`, 'i').test(value) ? undefined : 'Invalid email address';
-export const password = value => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(value) ? undefined : 'Password must contain one number, one lower case, one upper case, and be at least 8 characters';
+export const password = value => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/.test(value) ? undefined : 'Password must contain one number, one lower case, one upper case, and be at least 6 characters';
 
 export const number = value => value && isNaN(value) ? 'Must be a number' : undefined;
 export const maxChars = max => value => value && value.length > max ? `Must be ${max} characters or less` : undefined;
