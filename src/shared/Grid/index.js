@@ -8,7 +8,7 @@ const TableStyle = styled("div")`
 `;
 
 const TableColumnStyle = styled("div")`
-    
+    flex-grow: 1;
 `;
 
 const TableHeadStyle = styled("div")`
@@ -25,13 +25,34 @@ const TableHeadStyle = styled("div")`
 
 const TableFilterStyle = styled("div")`
     width: 100%;
+    height: 50px;
 `;
 
 const TableCellStyle = styled("div")`
     width: 100%;
+    height: 30px;
 `;
 
+const PaginationStyle = styled("div")`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 
+    .page-icons {
+        display: flex;
+        color: blue;
+
+        .page-icon {
+            font-size: 17px;
+            padding: 0 10px;
+            cursor: pointer;
+
+            &.active {
+                background: lightgrey;
+            }
+        }
+    }
+`;
 
 export default class extends React.Component {
     constructor(props) {
@@ -46,15 +67,31 @@ export default class extends React.Component {
                     dir: '',
                     field: ''
                 },
-                take: props.take || 20,
+                take: 10,
                 page: 1,
+                groups: props.groups || [],
             },
-            dataResult: props.data,
+            dataResult: [],
         }
         
         this.generateDataResult = this.generateDataResult.bind(this);
         this.onSortChange = this.onSortChange.bind(this);
         this.onFilterChange = this.onFilterChange.bind(this);
+        this.onTakeChange = this.onTakeChange.bind(this);
+        this.onPageClick = this.onPageClick.bind(this);
+        this.getPageIndexes = this.getPageIndexes.bind(this);
+        this.createPages = this.createPages.bind(this);
+        this.applyGroup = this.applyGroup.bind(this);
+    }
+
+    componentDidMount() {
+        this.generateDataResult(this.state.dataState);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.data.length !== prevProps.data.length) {
+            this.generateDataResult(this.state.dataState);
+        }
     }
 
     generateDataResult(dataState) {
@@ -73,7 +110,8 @@ export default class extends React.Component {
             }
             return comparison;
         }
-
+        
+        // apply filters
         dataState.filters.forEach(filter => {
             const dataStateField = this.props.fields.find(({name}) => name === filter.field); 
             if (dataStateField.filter === 'dropdown') {
@@ -82,11 +120,13 @@ export default class extends React.Component {
                 result = result.filter(row => row[filter.field].toUpperCase().includes(filter.value.toUpperCase()));
             }
         });
-
+        //apply sort
         if (sortDir) {
             result.sort(compare);
         }
-        
+        //reset grouping
+        this.groupName = '';
+        //update dataState and dataResult
         this.setState({
             dataState,
             dataResult: result,
@@ -124,47 +164,135 @@ export default class extends React.Component {
         }
     }
 
+    onTakeChange(event) {
+        this.generateDataResult({
+            ...this.state.dataState,
+            take: event.target.value,
+        })
+    }
+
+    onPageClick(page) {
+        this.groupName = '';
+        return () => {
+            this.setState({
+                dataState: {
+                    ...this.state.dataState,
+                    page: Number(page),
+                }
+            })
+        }
+    }
+
+    getPageIndexes() {
+        const endIndex = (this.state.dataState.page * this.state.dataState.take) - 1;
+        const startIndex = endIndex - this.state.dataState.take;
+        return {
+            endIndex,
+            startIndex,
+        }
+    }
+
+    createPages() {
+        let page = 1;
+        let elements = [];
+        let pageCount = Math.ceil(this.state.dataResult.length / this.state.dataState.take);
+
+        const createPageIcon = () => {
+            elements.push(
+                <div
+                    className={`page-icon ${page === this.state.dataState.page ? 'active' : ''}`}
+                    onClick={this.onPageClick(page)}
+                    key={'page'+page}
+                >
+                    {page}
+                </div>
+            )
+            pageCount--;
+            page++;
+            if (pageCount > 0) {
+                createPageIcon();
+            }
+        }
+        createPageIcon();
+
+        return elements;
+    }
+
+    applyGroup(fieldName) {
+        let hide = false;
+
+        if (this.state.dataState.groups.includes(fieldName)) {
+            if (this.groupName === fieldName) {
+                hide = true
+            } else {
+                this.groupName = fieldName;
+            }
+        }
+        console.log(this.groupName, hide)
+        return hide;
+    }
+
+    groupName = '';
+
     render() {
         const UpArrow = <div className="arrow arrow-up">&#9663;</div>
         const DownArrow = <div className="arrow arrow-down">&#9663;</div>
-
+        const indexes = this.getPageIndexes();
+        const rows = this.state.dataResult.filter((row, index) => index >=  indexes.startIndex && index <= indexes.endIndex);
+        
         return (
-            <TableStyle>
-                {this.props.fields.map(field => (
-                    <TableColumnStyle key={field.name}>
-                        <TableHeadStyle onClick={() => this.onSortChange(field.name)}>
-                            {field.title} {field.name === this.state.dataState.sort.field ? this.state.dataState.sort.dir === 'asc' ? UpArrow : DownArrow : ''}
-                        </TableHeadStyle>
-                        <TableFilterStyle>
-                            <>
+            <>
+                <TableStyle>
+                    {this.props.fields.map(field => (
+                        <TableColumnStyle key={field.name}>
+                            <TableHeadStyle onClick={() => this.onSortChange(field.name)}>
+                                {field.title} {field.name === this.state.dataState.sort.field ? this.state.dataState.sort.dir === 'asc' ? UpArrow : DownArrow : ''}
+                            </TableHeadStyle>
+                            <TableFilterStyle>
+                                <>
+                                {
+                                    field.filter === 'dropdown' ? (
+                                        <select onChange={this.onFilterChange(field.name)}>
+                                            <option value=""></option>
+                                            {
+                                                field.options.map(({label, value}, index) => (
+                                                    <option value={value} key={`dropdown${field.name + index}`}>{label}</option>
+                                                ))
+                                            }
+                                        </select>
+                                    ) : (
+                                        <input
+                                            onChange={this.onFilterChange(field.name)}
+                                            value={this.state.dataState.filters.find((filter) => filter.field === field.name).value} />
+                                    )
+                                }
+                                </>
+                            </TableFilterStyle>
                             {
-                                field.filter === 'dropdown' ? (
-                                    <select onChange={this.onFilterChange(field.name)}>
-                                        <option value=""></option>
-                                        {
-                                            field.options.map(({label, value}, index) => (
-                                                <option value={value} key={`dropdown${field.name + index}`}>{label}</option>
-                                            ))
-                                        }
-                                    </select>
-                                ) : (
-                                    <input
-                                        onChange={this.onFilterChange(field.name)}
-                                        value={this.state.dataState.filters.find((filter) => filter.field === field.name).value} />
-                                )
+                                rows.map((row, index) => (
+                                    <TableCellStyle key={field.name+index}>
+                                        {row[field.name] || '-'}
+                                    </TableCellStyle>
+                                ))
                             }
-                            </>
-                        </TableFilterStyle>
-                        {
-                            this.state.dataResult.map((dataItem, index) => (
-                                <TableCellStyle key={field.name+index}>
-                                    {dataItem[field.name]}
-                                </TableCellStyle>
-                            ))
-                        }
-                    </TableColumnStyle>
-                ))}
-            </TableStyle>
+                        </TableColumnStyle>
+                    ))}
+                </TableStyle>
+                <PaginationStyle>
+                    <div className="page-icons">
+                        Pages: {this.createPages()}
+                    </div>
+                    <div className="take-selector">
+                        # of rows to show
+                        <select onChange={this.onTakeChange} value={this.state.dataState.take}>
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
+                        </select>
+                    </div>
+                </PaginationStyle>
+            </>
         )
     }
 }

@@ -17,6 +17,7 @@ const HeaderStyle = styled("div")`
         background-color: #51607b;
         width: 100%;
         height: ${height};
+        z-index: 9999;
     }
     .links {
         display: flex;

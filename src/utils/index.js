@@ -8,3 +8,10 @@ export const updateFormValue = (name, context) => {
         })
     };
 }
+
+export const times = x => f => {
+    if (x > 0) {
+      f()
+      times (x - 1) (f)
+    }
+}
