@@ -67,6 +67,13 @@ export const updateContact = baseRequest(
     }
 );
 
+export const deleteContact = baseRequest(
+    ({groupId, contactId, contact}) => {
+        const uid = getUser().uid;
+        return window.firebase.database().ref('user-data/' + uid + '/' + groupId + '/contacts/' + contactId).remove();
+    }
+)
+
 export const signOutUser = baseRequest(
     () => window.firebase.auth().signOut()
 )
