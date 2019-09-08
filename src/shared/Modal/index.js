@@ -1,7 +1,11 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 
-
+export const ActionBtn = ({label, bsClass, action}) => {
+  <button className={`btn btn-${bsClass}`} onClick={action}>
+    {label}
+  </button>
+}
 
 export default ({title, show, actionBtns, children}) => {
   const ActionBtns = actionBtns();
