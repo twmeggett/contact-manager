@@ -5,6 +5,11 @@ import { EmailField, PasswordField } from '../../shared/Form';
 import { signInUser } from '../../API';
 import { updateFormValue } from '../../utils';
 
+export const ActionBtn = ({label, bsClass, action}) => (
+    <button className={`btn btn-${bsClass}`} onClick={action}>
+        {label}
+    </button>
+)
 
 class SignUp extends React.Component {
     constructor(props) {
