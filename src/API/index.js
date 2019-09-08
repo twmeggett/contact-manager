@@ -39,10 +39,6 @@ export const createGroup = baseRequest(
     }
 );
 
-export const fetchGroups = baseRequest(
-    () => {}
-);
-
 export const updateGroup = baseRequest(
     ({groupId, group}) => {
         const uid = getUser().uid;
@@ -58,6 +54,15 @@ export const createContact = baseRequest(
         const newPostKey = window.firebase.database().ref('user-data/' + uid + '/' + groupId + '/contacts').push().key;
         return window.firebase.database().ref().update({
             ['user-data/' + uid + '/' + groupId + '/contacts/' + newPostKey]: contact,
+        })
+    }
+);
+
+export const updateContact = baseRequest(
+    ({groupId, contactId, contact}) => {
+        const uid = getUser().uid;
+        return window.firebase.database().ref().update({
+            ['user-data/' + uid + '/' + groupId + '/contacts/' + contactId]: contact,
         })
     }
 );

@@ -7,7 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import { EmailField, TextField } from '../../shared/Form';
 import { required, inmarEmail, minNameLength, maxNameLength } from '../../shared/Form/validations';
 import { updateFormValue } from '../../utils';
-import { updateGroup, createGroup, createContact, getUser } from '../../API'
+import { updateGroup, createGroup, createContact, getUser, updateContact } from '../../API'
 
 const response = [
     {
@@ -220,7 +220,9 @@ class Home extends React.Component {
         console.log(editRow)
         this.setState({
             groupModalOpen: true, 
-            formVals: {},
+            formVals: {
+                name: editRow.name,
+            },
             editRow
         });
     }
@@ -234,6 +236,17 @@ class Home extends React.Component {
     }
 
     updateContact() {
+        updateContact({
+            groupId: this.state.editRow.groupId,
+            contactId: this.state.editRow.contactId,
+            contact: {
+                firstName: this.state.formVals.firstName,
+                lastName: this.state.formVals.lastName,
+                email: this.state.formVals.email,
+                phone: this.state.formVals.phone,
+                status: this.state.formVals.status || 'active',
+            }
+        });
         console.log(this.state.formVals, this.state.editRow)
     }
 
@@ -242,16 +255,8 @@ class Home extends React.Component {
     }
 
     updateGroup() {
-        console.log({
-            uid: this.state.editRow.groupId,
-            group: {
-                contacts: this.state.editRow.contacts,
-                name: this.state.formVals.name,
-                status: this.state.formVals.status || 'active',
-            }
-        })
         updateGroup({
-            uid: this.state.editRow.groupId,
+            groupId: this.state.editRow.groupId,
             group: {
                 contacts: this.state.editRow.contacts,
                 name: this.state.formVals.name,
