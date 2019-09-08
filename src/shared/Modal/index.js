@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 
 
 
-export default ({title, show, handleSubmit, handleDelete, handleClose, actionBtns, children}) => {
+export default ({title, show, actionBtns, children}) => {
   const ActionBtns = actionBtns();
   
   return (
