@@ -7,7 +7,7 @@ import Modal from "react-bootstrap/Modal";
 import { EmailField, TextField } from '../../shared/Form';
 import { required, inmarEmail, minNameLength, maxNameLength } from '../../shared/Form/validations';
 import { updateFormValue } from '../../utils';
-import { updateGroup, createGroup, createContact, getUser, updateContact, deleteContact } from '../../API'
+import { updateGroup, createGroup, createContact, getUser, updateContact, deleteContact, deleteGroup } from '../../API'
 
 class Home extends React.Component {
     constructor(props) {
@@ -156,7 +156,13 @@ class Home extends React.Component {
     }
 
     deleteGroup() {
-        console.log(this.state.formVals, this.state.editRow)
+        deleteGroup({
+            groupId: this.state.editRow.groupId,
+            group: {
+                name: this.state.formVals.name,
+                status: this.state.formVals.status || 'active',
+            }
+        });
     }
 
     createGroup() {
