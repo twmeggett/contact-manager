@@ -9,125 +9,6 @@ import { required, inmarEmail, minNameLength, maxNameLength } from '../../shared
 import { updateFormValue } from '../../utils';
 import { updateGroup, createGroup, createContact, getUser, updateContact, deleteContact } from '../../API'
 
-const response = [
-    {
-        name: 'Group 1',
-        status: 'active',
-        contacts: [
-            {
-                status: 'inactive',
-                firstName: 'Bob',
-                lastName: 'Guy',
-                email: 'test@inmar.com',
-                phone: '555-555-5555',
-            },
-            {
-                status: 'active',
-                firstName: 'Bobby',
-                lastName: '',
-                email: 'test@inmar.com',
-                phone: '555-555-5555',
-            },
-            {
-                status: 'inactive',
-                firstName: 'Jim',
-                lastName: 'Matthew',
-                email: 'test@inmar.com',
-                phone: '555-555-5555',
-            },
-            {
-                status: 'active',
-                firstName: 'Gary',
-                lastName: 'Blue',
-                email: 'test@inmar.com',
-                phone: '555-555-0098',
-            },
-            {
-                status: 'active',
-                firstName: 'Samantha',
-                lastName: 'Yellow',
-                email: 'test@inmar.com',
-                phone: '555-567-5555',
-            },
-            {
-                status: 'active',
-                firstName: 'Steve',
-                lastName: 'Smith',
-                email: 'test@inmar.com',
-                phone: '555-555-5555',
-            },
-        ],
-    },
-    {
-        name: 'Group 2',
-        status: 'inactive',
-        contacts: [
-            {
-                status: 'active',
-                firstName: 'Terry',
-                lastName: 'Crews',
-                email: 'test@inmar.com',
-                phone: '778-778-7785',
-            },
-            {
-                status: 'inactive',
-                firstName: 'Stan',
-                lastName: 'Smith',
-                email: 'test@inmar.com',
-                phone: '778-789-7785',
-            },
-        ]
-    },
-    {
-        name: 'Group 3',
-        status: 'inactive',
-        contacts: [
-            {
-                status: 'active',
-                firstName: 'Terry',
-                lastName: 'Crews',
-                email: 'test@inmar.com',
-                phone: '778-778-7785',
-            },
-            {
-                status: 'inactive',
-                firstName: 'Stan',
-                lastName: 'Smith',
-                email: 'test@inmar.com',
-                phone: '778-789-7785',
-            },
-            {
-                status: 'active',
-                firstName: 'Blue',
-                lastName: 'Horizon',
-                email: 'blue@inmar.com',
-                phone: '778-789-7785',
-            },
-            {
-                status: 'inactive',
-                firstName: 'Red',
-                lastName: 'Dawn',
-                email: 'red@inmar.com',
-                phone: '778-789-7785',
-            },
-            {
-                status: 'inactive',
-                firstName: 'Green',
-                lastName: 'Gang',
-                email: 'green@inmar.com',
-                phone: '778-789-7785',
-            },
-            {
-                status: 'active',
-                firstName: 'Purple',
-                lastName: 'Haze',
-                email: 'purple@inmar.com',
-                phone: '778-789-7785',
-            },
-        ]
-    }
-];
-
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -207,7 +88,13 @@ class Home extends React.Component {
     openContactModal(editRow) {
         this.setState({
             contactModalOpen: true, 
-            formVals: {},
+            formVals: {
+                status: editRow.status || 'active',
+                firstName: editRow.firstName,
+                lastName: editRow.lastName,
+                email: editRow.email,
+                phone: editRow.phone,
+            },
             editRow
         });
     }
@@ -262,7 +149,6 @@ class Home extends React.Component {
         updateGroup({
             groupId: this.state.editRow.groupId,
             group: {
-                contacts: this.state.editRow.contacts,
                 name: this.state.formVals.name,
                 status: this.state.formVals.status || 'active',
             }

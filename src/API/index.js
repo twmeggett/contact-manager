@@ -39,14 +39,14 @@ export const createGroup = baseRequest(
     }
 );
 
-export const updateGroup = baseRequest(
-    ({groupId, group}) => {
-        const uid = getUser().uid;
-        return window.firebase.database().ref().update({
-            ['user-data/' + uid + '/' + groupId]: group,
+export const updateGroup = ({groupId, group}) => {
+    const uid = getUser().uid;
+    window.firebase.database().ref('/user-data/' + uid + '/' + groupId).once('value').then(function(snapshot) {
+        window.firebase.database().ref().update({
+            ['user-data/' + uid + '/' + groupId]: {...group, contacts: snapshot.val().contacts},
         })
-    }
-);
+    });
+}
 
 export const createContact = baseRequest(
     ({groupId, contact}) => {
