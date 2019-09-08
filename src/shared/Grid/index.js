@@ -31,6 +31,7 @@ const TableFilterStyle = styled("div")`
 const TableCellStyle = styled("div")`
     width: 100%;
     height: 30px;
+    cursor: pointer;
 `;
 
 const PaginationStyle = styled("div")`
@@ -228,7 +229,6 @@ export default class extends React.Component {
                 this.groupName = fieldName;
             }
         }
-        console.log(this.groupName, hide)
         return hide;
     }
 
@@ -270,7 +270,7 @@ export default class extends React.Component {
                             </TableFilterStyle>
                             {
                                 rows.map((row, index) => (
-                                    <TableCellStyle key={field.name+index}>
+                                    <TableCellStyle key={field.name+index} onClick={field.onClick(row)}>
                                         {row[field.name] || '-'}
                                     </TableCellStyle>
                                 ))

@@ -4,20 +4,16 @@ import styled from 'styled-components';
 import * as ROUTES from '../../../routes';
 import { signOutUser } from '../../../API'
 
-const height = '65px';
 const HeaderStyle = styled("div")`
-    height: ${height};
     color: white;
     .header-content {
-        position: fixed;
+        height: 65px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0 10px;
         background-color: #51607b;
         width: 100%;
-        height: ${height};
-        z-index: 9999;
     }
     .links {
         display: flex;

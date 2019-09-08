@@ -29,6 +29,39 @@ export const signInUser = baseRequest(
     (creds) => window.firebase.auth().signInWithEmailAndPassword(creds.email, creds.password)
 );
 
+export const createGroup = baseRequest(
+    (group) => {
+        const uid = getUser().uid;
+        const newPostKey = window.firebase.database().ref('user-data/' + uid).push().key;
+        return window.firebase.database().ref().update({
+            ['/user-data/' + uid + '/' + newPostKey]: group,
+        })
+    }
+);
+
+export const fetchGroups = baseRequest(
+    () => {}
+);
+
+export const updateGroup = baseRequest(
+    ({groupId, group}) => {
+        const uid = getUser().uid;
+        return window.firebase.database().ref().update({
+            ['user-data/' + uid + '/' + groupId]: group,
+        })
+    }
+);
+
+export const createContact = baseRequest(
+    ({groupId, contact}) => {
+        const uid = getUser().uid;
+        const newPostKey = window.firebase.database().ref('user-data/' + uid + '/' + groupId + '/contacts').push().key;
+        return window.firebase.database().ref().update({
+            ['user-data/' + uid + '/' + groupId + '/contacts/' + newPostKey]: contact,
+        })
+    }
+);
+
 export const signOutUser = baseRequest(
     () => window.firebase.auth().signOut()
 )
