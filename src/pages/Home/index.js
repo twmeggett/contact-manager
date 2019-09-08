@@ -108,7 +108,8 @@ class Home extends React.Component {
         this.setState({
             groupModalOpen: true, 
             formVals: {
-                name: editRow.name,
+                name: editRow.group,
+                status: editRow.groupStatus,
             },
             editRow
         });
@@ -134,7 +135,6 @@ class Home extends React.Component {
                 status: this.state.formVals.status || 'active',
             }
         });
-        console.log(this.state.formVals, this.state.editRow)
     }
 
     deleteContact() {
@@ -280,7 +280,7 @@ class Home extends React.Component {
                     <Modal.Body>
                         <div className="container">
                             <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                                <select onChange={this.updateFormValue('status')}>
+                                <select onChange={this.updateFormValue('status')} value={this.state.editRow.status}>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
@@ -328,7 +328,7 @@ class Home extends React.Component {
                     <Modal.Body>
                         <div className="container">
                             <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                                <select onChange={this.updateFormValue('status')}>
+                                <select onChange={this.updateFormValue('status')} value={this.state.editRow.groupStatus}>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
@@ -367,7 +367,7 @@ class Home extends React.Component {
                         <div className="container">
                             <div className="container">
                                 <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                                    <select onChange={this.updateFormValue('status')}>
+                                    <select onChange={this.updateFormValue('status')} value={this.state.editRow.groupStatus}>
                                         <option value="active">Active</option>
                                         <option value="inactive">Inactive</option>
                                     </select>
@@ -398,7 +398,7 @@ class Home extends React.Component {
                     <Modal.Body>
                         <div className="container">
                             <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                                <select onChange={this.updateFormValue('status')}>
+                                <select onChange={this.updateFormValue('status')} value={this.state.editRow.status}>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
