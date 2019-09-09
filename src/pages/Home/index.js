@@ -104,12 +104,11 @@ class Home extends React.Component {
     }
 
     openGroupModal(editRow) {
-        console.log(editRow)
         this.setState({
             groupModalOpen: true, 
             formVals: {
                 name: editRow.group,
-                status: editRow.groupStatus,
+                groupStatus: editRow.groupStatus,
             },
             editRow
         });
@@ -150,7 +149,7 @@ class Home extends React.Component {
             groupId: this.state.editRow.groupId,
             group: {
                 name: this.state.formVals.name,
-                status: this.state.formVals.status || 'active',
+                status: this.state.formVals.groupStatus || 'active',
             }
         });
     }
@@ -160,7 +159,7 @@ class Home extends React.Component {
             groupId: this.state.editRow.groupId,
             group: {
                 name: this.state.formVals.name,
-                status: this.state.formVals.status || 'active',
+                status: this.state.formVals.groupStatus || 'active',
             }
         });
     }
@@ -168,7 +167,7 @@ class Home extends React.Component {
     createGroup() {
         createGroup({
             name: this.state.formVals.name,
-            status: this.state.formVals.status || 'active',
+            status: this.state.formVals.groupStatus || 'active',
             contacts: {},
         });
     }
@@ -280,7 +279,7 @@ class Home extends React.Component {
                     <Modal.Body>
                         <div className="container">
                             <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                                <select onChange={this.updateFormValue('status')} value={this.state.editRow.status}>
+                                <select onChange={this.updateFormValue('status')} value={this.state.formVals.status}>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
@@ -328,7 +327,7 @@ class Home extends React.Component {
                     <Modal.Body>
                         <div className="container">
                             <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                                <select onChange={this.updateFormValue('status')} value={this.state.editRow.groupStatus}>
+                                <select onChange={this.updateFormValue('groupStatus')} value={this.state.formVals.groupStatus}>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
@@ -367,7 +366,7 @@ class Home extends React.Component {
                         <div className="container">
                             <div className="container">
                                 <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                                    <select onChange={this.updateFormValue('status')} value={this.state.editRow.groupStatus}>
+                                    <select onChange={this.updateFormValue('groupStatus')} value={this.state.formVals.groupStatus}>
                                         <option value="active">Active</option>
                                         <option value="inactive">Inactive</option>
                                     </select>
@@ -398,7 +397,7 @@ class Home extends React.Component {
                     <Modal.Body>
                         <div className="container">
                             <div className="col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
-                                <select onChange={this.updateFormValue('status')} value={this.state.editRow.status}>
+                                <select onChange={this.updateFormValue('status')} value={this.state.formVals.status}>
                                     <option value="active">Active</option>
                                     <option value="inactive">Inactive</option>
                                 </select>
