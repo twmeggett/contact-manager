@@ -18,6 +18,13 @@ const baseRequest = (request) => (props, successCB, errorCB) => {
             console.log(msg);
         });
 };
+const userDataPath = () => '/user-data/' + getUser().uid;
+const groupDataPath = (groupId) => userDataPath() + '/' + groupId;
+const contactPath = (groupId) => userDataPath() + '/' + groupId + '/contacts';
+const groupRef = (groupId) => window.firebase.database().ref(groupDataPath(groupId));
+const contactRef= (groupId, contactId) => window.firebase.database().ref(contactPath(groupId) + '/' + contactId);
+const newGroupKey = () => window.firebase.database().ref(userDataPath()).push().key;
+const newContactKey = () => window.firebase.database().ref(contactPath()).push().key;
 
 export const getUser = () => window.firebase.auth().currentUser;
 
@@ -31,54 +38,36 @@ export const signInUser = baseRequest(
 
 export const createGroup = baseRequest(
     (group) => {
-        const uid = getUser().uid;
-        const newPostKey = window.firebase.database().ref('user-data/' + uid).push().key;
-        return window.firebase.database().ref().update({
-            ['/user-data/' + uid + '/' + newPostKey]: group,
-        })
+        return groupRef(newGroupKey()).update(group);
     }
 );
 
-export const updateGroup = ({groupId, group}) => {
-    const uid = getUser().uid;
-    window.firebase.database().ref('/user-data/' + uid + '/' + groupId).once('value').then(function(snapshot) {
-        window.firebase.database().ref().update({
-            ['user-data/' + uid + '/' + groupId]: {...group, contacts: snapshot.val().contacts},
-        })
-    });
-}
+export const updateGroup = baseRequest(
+    async ({groupId, group}) => {
+        const ref = groupRef(groupId);
+        const groupSnapshot = await ref.once('value');
+        ref.update({...groupSnapshot.val(), ...group});
+    }
+);
 
 export const createContact = baseRequest(
-    ({groupId, contact}) => {
-        const uid = getUser().uid;
-        const newPostKey = window.firebase.database().ref('user-data/' + uid + '/' + groupId + '/contacts').push().key;
-        return window.firebase.database().ref().update({
-            ['user-data/' + uid + '/' + groupId + '/contacts/' + newPostKey]: contact,
-        })
-    }
+    ({groupId, contact}) => contactRef(groupId, newContactKey()).update(contact)
 );
 
 export const updateContact = baseRequest(
-    ({groupId, contactId, contact}) => {
-        const uid = getUser().uid;
-        return window.firebase.database().ref().update({
-            ['user-data/' + uid + '/' + groupId + '/contacts/' + contactId]: contact,
-        })
+    async ({groupId, contactId, contact}) => {
+        const ref = contactRef(groupId, contactId);
+        const contactSnapshot = await ref.once('value');
+        ref.update({...contactSnapshot.val(), ...contact});
     }
 );
 
 export const deleteContact = baseRequest(
-    ({groupId, contactId, contact}) => {
-        const uid = getUser().uid;
-        return window.firebase.database().ref('user-data/' + uid + '/' + groupId + '/contacts/' + contactId).remove();
-    }
+    ({groupId, contactId}) => contactRef(groupId, contactId).remove()
 );
 
 export const deleteGroup = baseRequest(
-    ({groupId}) => {
-        const uid = getUser().uid;
-        return window.firebase.database().ref('user-data/' + uid + '/' + groupId).remove();
-    }
+    ({groupId}) => groupRef(groupId).remove()
 )
 
 export const signOutUser = baseRequest(
